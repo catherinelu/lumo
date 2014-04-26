@@ -28,4 +28,3 @@ def events(request):
 
   all_entries = Event.objects.all()
   return render(request, 'events.html')
-
