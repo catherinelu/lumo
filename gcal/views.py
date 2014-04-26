@@ -111,28 +111,28 @@ def index(request):
     events = retrieve_events_from_calendar(service, PRIMARY_ID)
 
     # delete old entries for the user
-    # Event.objects.filter(user=user).delete()
-    # # save events to model
-    # for evt in events:
-    #   user_name = user
-    #   start_time = evt['start']['dateTime']
-    #   location = evt['location'] if 'location' in evt else ""
-    #   description = evt['summary']
+    Event.objects.filter(user=user).delete()
+    # save events to model
+    for evt in events:
+      user_name = user
+      start_time = evt['start']['dateTime']
+      location = evt['location'] if 'location' in evt else ""
+      description = evt['summary']
       
-    #   # add the other self defined ones
-    #   reminder_time = 0
-    #   if (not evt['reminders']['useDefault']) and ('overrides' in evt['reminders']):
-    #     for rem in evt['reminders']['overrides']:
-    #       reminder_time = max(reminder_time, int(rem['minutes']))
-    #     evt_entry = Event.objects.create_reminder(user_name, start_time, reminder_time, location, description)
-    #   else:
-    #     # add the default reminder
-    #     reminder_time = 30
-    #     evt_entry = Event.objects.create_reminder(user_name, start_time, reminder_time, location, description)
-    #   evt_entry.save()
+      # add the other self defined ones
+      reminder_time = 0
+      if (not evt['reminders']['useDefault']) and ('overrides' in evt['reminders']):
+        for rem in evt['reminders']['overrides']:
+          reminder_time = max(reminder_time, int(rem['minutes']))
+        evt_entry = Event.objects.create_reminder(user_name, start_time, reminder_time, location, description)
+      else:
+        # add the default reminder
+        reminder_time = 30
+        evt_entry = Event.objects.create_reminder(user_name, start_time, reminder_time, location, description)
+      evt_entry.save()
 
-    # queryset = Event.objects.all()
-    # print([p.reminder_time for p in queryset])
+    queryset = Event.objects.all()
+    print([p.description for p in queryset])
 
     # return HttpResponseRedirect(reverse('hue:index'))
     return HttpResponse("Yay")
