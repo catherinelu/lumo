@@ -135,13 +135,7 @@ def index(request):
     sorted_queryset = sorted(queryset, key=lambda x: x.start_time)
     print([p.start_time for p in sorted_queryset])
 
-<<<<<<< HEAD
     return HttpResponseRedirect(reverse('events'))
-    # return HttpResponse("Yay")
-=======
-    # return HttpResponseRedirect(reverse('hue:index'))
-    return HttpResponse("Yay")
->>>>>>> 8de9823fad52367070a1f3f819ace7e469f80d4e
 
 def auth_return(request):
   # use dummy_user
