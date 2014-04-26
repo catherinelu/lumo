@@ -137,6 +137,7 @@ def index(request):
 
     return HttpResponseRedirect(reverse('events'))
 
+
 def auth_return(request):
   # use dummy_user
   user = dummy_user
