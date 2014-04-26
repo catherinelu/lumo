@@ -132,7 +132,8 @@ def index(request):
       evt_entry.save()
 
     queryset = Event.objects.all()
-    print([p.description for p in queryset])
+    sorted_queryset = sorted(queryset, key=lambda x: x.start_time)
+    print([p.start_time for p in sorted_queryset])
 
     # return HttpResponseRedirect(reverse('hue:index'))
     return HttpResponse("Yay")
