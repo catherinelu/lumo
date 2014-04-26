@@ -7,6 +7,6 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'lumoapp.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^gcal/', include('gcal.urls', namespace='gcal')),
     url(r'^admin/', include(admin.site.urls)),
 )
