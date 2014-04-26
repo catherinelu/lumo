@@ -89,11 +89,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# List of finder classes that know how to find static files in
+# various locations.
+# STATICFILES_FINDERS = (
+#   'django.contrib.staticfiles.finders.FileSystemFinder',
+#   'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#   # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+# )
+
 # The following was added by following directions from "Getting Started With Django"
 # via the Heroku website:
 # Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+# import dj_database_url
+# DATABASES['default'] =  dj_database_url.config(default='postgres://user:pass@localhost/dbname')
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -102,10 +110,9 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
-# import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
-# STATIC_URL = '/static/'
+# Absolute path where collectstatic will collect static files for deployment
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
