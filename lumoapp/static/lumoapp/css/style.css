@@ -6,3 +6,34 @@ h1 {
 body {
 	font-family: 'Lato', 'sans-serif';
 }
+
+.event-entry-detail {
+	background-color: #C6E5D9;
+	display: none;
+	padding: 2% 5% 2% 5%;
+}
+
+.event-time-div {
+	font-size: 24;
+	padding: 20% 0% 20% 0%;
+}
+
+.event-time-div span {
+	font-size: 16;
+}
+
+.event-time-date {
+	font-size: 20;
+}
+
+.event-entry-overview {
+	min-height: 60;
+}
+
+.event-description-div{
+	font-size: 18;
+	padding-top: 25;
+}
+/*	$( "." ).css("min-height", "40");
+	$( ".event-entry-div" ).css("padding", "2% 0% 2% 0%");
+	$( ".event-entry-detail" ).css("padding", "2% 5% 2% 5%");*/

@@ -131,9 +131,9 @@ def index(request):
         evt_entry = Event.objects.create_reminder(user_name, start_time, reminder_time, location, description)
       evt_entry.save()
 
-    queryset = Event.objects.all()
-    sorted_queryset = sorted(queryset, key=lambda x: x.start_time)
-    print([p.start_time for p in sorted_queryset])
+    # queryset = Event.objects.all()
+    # sorted_queryset = sorted(queryset, key=lambda x: x.start_time)
+    # print([p.start_time for p in sorted_queryset])
 
     return HttpResponseRedirect(reverse('events'))
 

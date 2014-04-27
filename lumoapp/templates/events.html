@@ -11,5 +11,42 @@
 
 <h1>Hello Lumo</h1>
 
+<div class="container-fluid">
+	{% for evt in events %}
+    <div class="event-entry-div">
+    	<div class="row event-entry-overview">
+	    	<div class="col-xs-5">
+	    		<div class='event-time-div'>
+	    			{{ evt.start_time.hour}} : {{ evt.start_time.minute}} <span>{{ evt.start_time.suffix}}</span>
+	    		</div>
+<!-- 	    		<div class='event-date-div'>
+	    			{{ evt.start_time.month }} {{ evt.start_time.date}}
+	    		</div> -->
+	    	</div>
+	    	<div class="col-xs-7 event-description-div">{{ evt.description }}</div>
+    	</div>
+    	<div class="row event-entry-detail">
+    		<div>Detail</div>
+    	</div>
+    </div>
+	{% endfor %}
+</div>
+
 <script type="text/javascript" src="{% static 'lumoapp/js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'lumoapp/js/bootstrap.min.js' %}"></script>
+
+<script type="text/javascript">
+	$( ".event-entry-overview" ).click(function() {
+		// 	console.log($( this ).css( "background-color"));
+		$( this ).css( "background-color", "FCFEF5");
+		var cur_detail =  $( this ).next('.event-entry-detail');
+		if (cur_detail.is( ":hidden" ) ) {
+	    cur_detail.slideDown();
+	  } else {
+	  	$( this ).css( "background-color", "FFFFFF");
+	    cur_detail.slideUp();
+	  }
+	});
+
+	
+</script>
