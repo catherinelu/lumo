@@ -43,12 +43,12 @@ class Hue:
         ## and that returns proper json.
         resp = requests.request(method, path, data=data)
 
-        logger.debug(resp)
-        logger.debug(resp.content)
+        # logger.debug(resp)
+        # logger.debug(resp.content)
 
         resp = json.loads(resp.content)
 
-        logger.debug(resp)
+        # logger.debug(resp)
 
         if isinstance(resp, list) and resp[0].get("error", None):
             error = resp[0]["error"]
@@ -75,12 +75,12 @@ class Hue:
         }
 
         resp = requests.post(path, data=json.dumps(auth))
-        logger.debug(resp)
-        logger.debug(resp.content)
+        # logger.debug(resp)
+        # logger.debug(resp.content)
 
         resp = json.loads(resp.content)
 
-        logger.debug(resp)
+        # logger.debug(resp)
 
         logger.warn("Time to go press your button!")
 
@@ -97,7 +97,7 @@ class Hue:
     def get_state(self):
         self.last_resp = self.request()
         state = self.last_resp
-        logger.debug(state)
+        # logger.debug(state)
 
         self.state = state
         self.config = state['config']
@@ -189,13 +189,13 @@ class ExtendedColorLight:
             phosphor_red=colormodels.xyz_color(0.64843, 0.33086),
             phosphor_green=colormodels.xyz_color(0.4091, 0.518),
             phosphor_blue=colormodels.xyz_color(0.167, 0.04))
-        logger.debug(redScale, greenScale, blueScale)
+        # logger.debug(redScale, greenScale, blueScale)
         xyz = colormodels.irgb_color(red, green, blue)
-        logger.debug(xyz)
+        # logger.debug(xyz)
         xyz = colormodels.xyz_from_rgb(xyz)
-        logger.debug(xyz)
+        # logger.debug(xyz)
         xyz = colormodels.xyz_normalize(xyz)
-        logger.debug(xyz)
+        # logger.debug(xyz)
 
         return self.set_state(
             {"xy": [xyz[0], xyz[1]], "transitiontime": transitiontime})

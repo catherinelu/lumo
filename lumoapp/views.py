@@ -1,33 +1,79 @@
 from django.shortcuts import render
-from hue import Hue
-
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-
 # django authentication
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-
+from gcal import models as gcal_models
+from hue import Hue
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.django_orm import Storage
 import os, logging, httplib2
 import time
 
-from gcal.models import Event
+# CLIENT_SECRETS, name of a file containing the OAuth 2.0 information for this
+# application, including client_id and client_secret, which are found
+# on the API Access tab on the Google APIs
+# Console <http://code.google.com/apis/console>
+CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '../gcal/client_secrets.json')
 
-def home(request):
-    h = Hue()
-    h.get_state()
-    light = h.lights.get('l1')
-    light.on()
-    light.bri(255)
-    light.off()
-    return render(request, 'home.epy')
+FLOW = flow_from_clientsecrets(CLIENT_SECRETS,
+  scope=[
+      'https://www.googleapis.com/auth/calendar',
+      'https://www.googleapis.com/auth/calendar.readonly',
+    ],
+    # change it to production website once deployed
+    redirect_uri='http://localhost:8000/gcal/oauth2callback'
+    # redirect_uri='./gcal/oauth2callback'
+)
+
+# use a dummy user in this project
+DUMMY_USERNAME = 'corgi'
+try:
+  dummy_user = User.objects.get(username=DUMMY_USERNAME)
+except ObjectDoesNotExist:
+  dummy_user = User.objects.create_user(username=DUMMY_USERNAME, password=DUMMY_USERNAME)
+  dummy_user.save()
+
+
+def get_google_authentication(request):
+  # use dummy_user
+  user = dummy_user
+
+  storage = Storage(gcal_models.CredentialsModel, 'id', user, 'credential')
+  credential = storage.get()
+
+  if credential is None or credential.invalid == True:
+    FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
+                                                   user)
+    authorize_url = FLOW.step1_get_authorize_url()
+    return HttpResponseRedirect(authorize_url)
+  else:
+    # authenticate user in django
+    user = authenticate(username=DUMMY_USERNAME, password=DUMMY_USERNAME)
+    login(request, user)
+
+    return HttpResponseRedirect(reverse('events'))
+
+
+def auth_return(request):
+  # use dummy_user
+  user = dummy_user
+
+  if not xsrfutil.validate_token(settings.SECRET_KEY, request.REQUEST['state'],
+                                user):
+    return  HttpResponseBadRequest()
+  credential = FLOW.step2_exchange(request.REQUEST)
+  storage = Storage(CredentialsModel, 'id', user, 'credential')
+  storage.put(credential)
+  return HttpResponseRedirect("/gcal/")
+
 
 def events(request):
   if not request.user.is_authenticated():
-    return HttpResponseRedirect(reverse('gcal:index'))
+    get_google_authentication(request)
 
-  all_entries = sorted(Event.objects.all(), key=lambda x: x.start_time)
+  all_entries = sorted(gcal_models.Event.objects.all(), key=lambda x: x.start_time)
 
   events = []
   # preprocessing the events data for later rendering at html
@@ -50,6 +96,7 @@ def events(request):
     entry.start_time = parsed_time
 
   return render(request, 'events.html', {'events': all_entries})
+
 
 def numToMonth(num):
   month = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
