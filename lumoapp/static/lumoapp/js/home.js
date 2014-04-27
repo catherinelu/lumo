@@ -79,6 +79,8 @@ $(function() {
   		<input  class='time-input-div' type='number' min='0' max='59' name='input-min' id='input-min' value='00'></span>"
 		);
 
+    $(".average-sleeptime-div").html("7h 23min of sleep on average last week!");
+
   	var $confirm_row = $( ".alarm-confirm-div" );
 	 
 	 	$confirm_row.click(function() {

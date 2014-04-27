@@ -106,6 +106,13 @@ body {
 	background-color: #F7E4BE;
 }
 
+.average-sleeptime-div{
+	font-size: 14px;
+	color: #556270;
+	margin-top: -5px;
+	margin-bottom: 10px;
+	text-align: center;
+}
 /* for the bed modal */
 .bed-modal {
 	top: 30%;
@@ -114,7 +121,6 @@ body {
 .dim-set-div {
 	font-size: 18px;
 	text-align: center;
-
 	padding-bottom: 20px;
 }
 
