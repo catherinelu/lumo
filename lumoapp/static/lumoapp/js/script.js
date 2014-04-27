@@ -1,42 +1,6 @@
 var IP_ADDRESS = '192.168.1.140';
 var intervals = [];
 
-function createLightsPattern() {
-  var interval = setInterval(function() {
-    changeLightsOfAll(true, 100, 200, 20000);
-  }, 6000);
-  intervals.push(interval);
-
-  setTimeout(function() {
-    var interval = setInterval(function() {
-      changeLightsOfAll(true, 100, 255, 65535);
-    }, 6000);
-    intervals.push(interval);
-  }, 3000);
-
-  // var interval = setInterval(function() {
-  //   changeLights(true, 255, 255, 5000, 1);
-  //   changeLights(true, 255, 255, 5000, 2);
-  // }, 2000);
-  // intervals.push(interval);
-
-  // interval = setInterval(function() {
-  //   changeLights(true, 0, 255, 5000, 1);
-  //   changeLights(true, 0, 255, 5000, 2);
-  // }, 4000);
-  // intervals.push(interval);
-
-  // interval = setInterval(function() {
-  //   changeLights(true, 100, 100, 25000, 3);
-  // }, 3000);
-  // intervals.push(interval);
-
-  // interval = setInterval(function() {
-  //   changeLights(true, 0, 100, 25000, 3);
-  // }, 6000);
-  // intervals.push(interval);
-}
-
 function changeLightsOfAll(isOn, saturation, brightness, hue_value) {
   console.log('CHANGE LIGHTS OF ALL');
   $.ajax({
@@ -69,6 +33,36 @@ $(function() {
   checkForNotifications();
   setInterval(checkForNotifications, 10000);
 
+  function createEndingLightsPattern() {
+    var interval = setInterval(function() {
+      changeLightsOfAll(true, 100, 200, 20000);
+    }, 6000);
+    intervals.push(interval);
+
+    setTimeout(function() {
+      var interval = setInterval(function() {
+        // Change to a red color
+        changeLightsOfAll(true, 255, 255, 65000);
+      }, 6000);
+      intervals.push(interval);
+    }, 3000);
+  }
+
+  function createStartingLightsPattern() {
+    var interval = setInterval(function() {
+      changeLightsOfAll(true, 255, 255, 45000);
+    }, 6000);
+    intervals.push(interval);
+
+    setTimeout(function() {
+      var interval = setInterval(function() {
+        // Change to a green color
+        changeLightsOfAll(true, 255, 255, 26000);
+      }, 6000);
+      intervals.push(interval);
+    }, 3000);
+  }
+
   function notifyWithLights(notification) {
     var $notification = $('*[data-id=' + notification.id + ']');
     var description = $notification.find('.event-description-div').html();
@@ -79,13 +73,15 @@ $(function() {
     if (notification.is_end) {
       var time = $notification.find('.end-time').html();
       $alert.find('.time').html('ending at ' + time);
+      if ($alert.css('display') !== 'none') {
+        createEndingLightsPattern();
+      }
     } else {
       var time = $notification.find('.event-time-div').html();
       $alert.find('.time').html('starting at ' + time);      
-    }
-
-    if ($alert.css('display') !== 'none') {
-      createLightsPattern();
+      if ($alert.css('display') !== 'none') {
+        createStartingLightsPattern();
+      }
     }
   }
 

@@ -33,7 +33,11 @@
     	  		<b>{{ evt.description}}</b>
     	  	</div>
      	  	<div class="col-xs-4 event-detail-remind-div event-detail-row">
-     	  		<img id="event-remind-img" src="{% static 'lumoapp/img/tones-20.png' %}"></img> <!-- {{ evt.reminder_time}} min -->
+            {% if evt.remind_end_time %}
+            <img id="event-remind-img" src="{% static 'lumoapp/img/bells-25.png' %}"></img> <!-- {{ evt.reminder_time}} min -->
+            {% else %}
+            <img id="event-remind-img" src="{% static 'lumoapp/img/tones-20.png' %}"></img> <!-- {{ evt.reminder_time}} min -->
+            {% endif %}
     	  	</div>
     	  </div>
     		<div class="row event-detail-datetime-div event-detail-row">{{ evt.start_time.month }} {{ evt.start_time.date}},
