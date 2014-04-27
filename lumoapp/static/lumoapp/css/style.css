@@ -28,6 +28,7 @@ body {
 
 .event-entry-overview {
 	min-height: 60;
+	border-top: solid 1px #A7DBD8;
 }
 
 .event-description-div{
