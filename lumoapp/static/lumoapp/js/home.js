@@ -3,7 +3,7 @@ $(function() {
 	var GREEN_ALARM_PNG = 'static/lumoapp/img/alarm-25-green.png';
 
   checkForAlarms();
-  setInterval(checkForAlarms, 30000);
+  setInterval(checkForAlarms, 10000);
 
 	$( ".event-entry-overview" ).click(function() {
 		$( this ).css( "background-color", "FCFEF5");
@@ -165,8 +165,8 @@ $(function() {
   }
 
   function brightenLights() {
-  	// settings lights to be bright at the beginning
-  	changeLightsOfAll(true, 0, 255, 0);
+  	// settings lights to be dim at the beginning
+  	changeLightsOfAll(true, 0, 0, 0);
   	// brightening, taking 1 minute
   	setTimeout(function() { changeLightsOfAll(true, 0, 255, 0, 10 * 60); }, 3000);
   }

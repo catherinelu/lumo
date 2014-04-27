@@ -67,7 +67,7 @@ $(function() {
   var $alert = $('.alert');
 
   checkForNotifications();
-  setInterval(checkForNotifications, 30000);
+  setInterval(checkForNotifications, 10000);
 
   function notifyWithLights(notification) {
     var $notification = $('*[data-id=' + notification.id + ']');
