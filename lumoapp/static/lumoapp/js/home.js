@@ -27,8 +27,7 @@
 	  	}
 		});
 
-		var $alert = $('.alert');
-	  $alert.modal();
+		var $alert = $('.alarm-modal');
 
 		$("#footer-alarm-div").click(function() {
 			$alert.find('.modal-content').empty();
