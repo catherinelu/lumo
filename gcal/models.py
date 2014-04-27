@@ -32,6 +32,7 @@ class Event(models.Model):
   reminder_time = models.IntegerField(default=30)
   location = models.CharField(max_length=200)
   description = models.CharField(max_length=200)
+  notified = models.BooleanField(default=False)
 
   objects = EventManager()
 
