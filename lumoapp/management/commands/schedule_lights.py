@@ -67,7 +67,7 @@ class Command(BaseCommand):
       # See if an event of the same time, description, and user exists. If not,
       # add it into the database
       event = gcal_models.Event.objects.filter(start_time=start_time, user=user, description=description)
-      if event.count() == 0: 
+      if event.count() == 0:
         # add the other self defined ones
         reminder_time = 0
         if (not evt['reminders']['useDefault']) and ('overrides' in evt['reminders']):
@@ -81,6 +81,20 @@ class Command(BaseCommand):
           evt_entry = gcal_models.Event.objects.create_reminder(user,
             start_time, end_time, reminder_time, location, description)
         evt_entry.save()
+
+    # Delete event models that were deleted from the calendar
+    db_events = gcal_models.Event.objects.all()
+    for db_event in db_events:
+      found = False
+      for evt in events:
+        start_time = evt['start']['dateTime']
+        description = evt['summary']
+        if db_event.start_time == start_time and description == db_event.description:
+          found = True
+          break
+      if not found:
+        db_event.delete()
+
 
 
   def build_service(self, credential):
