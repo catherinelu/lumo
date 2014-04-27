@@ -1,3 +1,5 @@
+from datetime import datetime
+import pytz
 from django.shortcuts import render
 from django import http
 from django.core.management import call_command
@@ -6,13 +8,14 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from gcal import models as gcal_models
-from hue import Hue
+from lumoapp import models as lumo_models
 import json
 from lumoproject import settings
 from oauth2client import xsrfutil
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.django_orm import Storage
 import os, logging, httplib2
+import pytz
 import time
 
 # CLIENT_SECRETS, name of a file containing the OAuth 2.0 information for this
@@ -150,8 +153,42 @@ def check_for_notifications(request):
     return http.HttpResponse(None, mimetype='application/json')
 
 
+def check_for_alarms(request):
+  alarms = lumo_models.AlarmEvent.objects.filter(should_notify=True, notified=False
+    ).order_by('alarm_time')
+  if alarms.count() > 0:
+    return http.HttpResponse(alarms[0].id, mimetype='application/json')
+  else:
+    return http.HttpResponse(None, mimetype='application/json')
+
+
 def notification_occurred(request, notification_id):
   event = gcal_models.Event.objects.get(pk=notification_id)
   event.notified = True
   event.save()
+  return http.HttpResponse(200)
+
+
+def alarm_occurred(request, alarm_id):
+  alarm = lumo_models.AlarmEvent.objects.get(pk=alarm_id)
+  alarm.notified = True
+  alarm.save()
+  return http.HttpResponse(200)
+
+
+def save_alarm(request, hour, minutes):
+  hour = int(hour)
+  minutes = int(minutes)
+  pst_timezone = pytz.timezone('US/Pacific')
+  datetime_to_save = pst_timezone.localize(datetime.today())
+
+  # if time already passed for today, then get tomorrow
+  if datetime_to_save.hour > hour or datetime_to_save.hour == hour and datetime_to_save.minute > minutes:
+    datetime_to_save = datetime_to_save + datetime.timedelta(days=1)
+
+  datetime_to_save = datetime_to_save.replace(hour=hour, minute=minutes)
+
+  alarm_event = lumo_models.AlarmEvent(user=dummy_user, alarm_time=datetime_to_save)
+  alarm_event.save()
+
   return http.HttpResponse(200)

@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from lumoapp import hue
 from oauth2client.django_orm import Storage
 from gcal import models as gcal_models
+from lumoapp import models as lumo_models
+from datetime import datetime, timedelta
 import httplib2
 import time
 
@@ -26,8 +28,9 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     user = dummy_user
-    events = gcal_models.Event.objects.filter(notified=False, should_notify=False, user=user)
 
+    # Go through calendar events and see if any require notifications
+    events = gcal_models.Event.objects.filter(notified=False, should_notify=False, user=user)
     self.update_events_in_db()
 
     for event in events:
@@ -44,6 +47,16 @@ class Command(BaseCommand):
       if abs(event.reminder_time - min_to_event) <= 1:
         event.should_notify = True
         event.save()
+
+
+    # Go through alarms and see if any require notifications
+    alarms = lumo_models.AlarmEvent.objects.filter(notified=False, should_notify=False, user=user)
+    for alarm in alarms:
+      cur_datetime = datetime.today()
+      time_difference = cur_datetime - alarm.alarm_time.replace(tzinfo=None)
+      if time_difference < timedelta(minutes=1):
+        alarm.should_notify = True
+        alarm.save()
 
 
   def update_events_in_db(self):

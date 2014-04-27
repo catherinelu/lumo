@@ -11,3 +11,4 @@ wsgiref==0.1.2
 requests==0.14.2
 ColorPy==0.1.1
 numpy
+pytz>=2013b
