@@ -10,8 +10,9 @@ $(function() {
   function notifyWithLights(notificationId) {
     var notification = $('*[data-id=' + notificationId + ']');
     var description = notification.find('.event-description-div').html();
-    var time = notification.find('')
-    $alert.find('.modal-content').html(description);
+    var time = notification.find('.event-time-div').html();
+    $alert.find('.description').html(description);
+    $alert.find('.time').html(time);
 
     if ($alert.css('display') !== 'none') {
       createLightsPattern();
@@ -100,6 +101,8 @@ $(function() {
           intervals = []
           // deleteAllSchedules();
           changeLightsOfAll(true, 0, 255, 65535);
+          setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 2000);
+          setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 4000);          
         });
 
         notifyWithLights(notificationId);
