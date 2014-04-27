@@ -2,12 +2,9 @@ $(function() {
   var IP_ADDRESS = '192.168.1.140';
 
   var $alert = $('.alert');
-  $alert.modal();
 
-  $alert.modal('show');
-  $alert.css('display', 'block');
-
-  // checkForNotifications();
+  checkForNotifications();
+  setInterval(checkForNotifications, 30000);
 
   function notifyWithLights(notificationId) {
     var notification = $('*[data-id=' + notificationId + ']');
@@ -45,7 +42,11 @@ $(function() {
     $.ajax({
       url: 'check-for-notifications/'
     }).done(function(notificationId) {
+      n = notificationId;
+      console.log(n);
       if (notificationId) {
+        $alert.modal('show');
+        $alert.css('display', 'block');
         notifyWithLights(notificationId);
         var lightsNotification = setInterval(function() { notifyWithLights(notificationId); }, 10000);
 
@@ -57,14 +58,12 @@ $(function() {
         tellAppNotificationOccurred(notificationId);
       }
     });
-
-    setTimeout(checkForNotifications, 30000);
   }
 
   function tellAppNotificationOccurred(notificationId) {
     $.ajax({
       url: 'notification-occurred/' + notificationId + '/',
-      type: 'POST'
+      type: 'GET'
     });
   }
 

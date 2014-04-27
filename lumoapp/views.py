@@ -137,15 +137,13 @@ def check_for_notifications(request):
   events = gcal_models.Event.objects.filter(should_notify=True, notified=False
     ).order_by('start_time')
   if events.count() > 0:
-    event = {
-      'id': events[0].id
-    }
-    return http.HttpResponse(json.dumps(event), mimetype='application/json')
+    return http.HttpResponse(events[0].id, mimetype='application/json')
   else:
     return http.HttpResponse(None, mimetype='application/json')
 
 
 def notification_occurred(request, notification_id):
-  event = gcal_models.Event.objets.get(pk=notification_id)
-  event.delete()
+  event = gcal_models.Event.objects.get(pk=notification_id)
+  event.notified = True
+  event.save()
   return http.HttpResponse(200)
