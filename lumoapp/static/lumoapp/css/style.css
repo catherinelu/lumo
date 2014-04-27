@@ -51,6 +51,11 @@ body {
 .event-detail-remind-div {
 	text-align: right;
 }
-/*	$( "." ).css("min-height", "40");
-	$( ".event-entry-div" ).css("padding", "2% 0% 2% 0%");
-	$( ".event-entry-detail" ).css("padding", "2% 5% 2% 5%");*/
+
+.footer-div {
+	background-color: #F7E4BE;
+	color: #C6E5D9;
+	text-align: center;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}

@@ -43,6 +43,23 @@
 	{% endfor %}
 </div>
 
+<div id="footer" class="container">
+    <nav class="navbar navbar-default navbar-fixed-bottom footer-div">
+        <div class="navbar-inner navbar-content-center"> 
+        	<div class="container-fluid">
+        		<div class="row">
+        			<div class="col-xs-6 footer-col-div" id="footer-alarm-div">
+        				<img src="{% static 'lumoapp/img/alarm-25.png' %}"></img>
+        			</div>
+        			<div class="col-xs-6 footer-col-div" id="footer-bed-div">
+        				<img src="{% static 'lumoapp/img/bed-25.png' %}"></img>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+    </nav>
+</div>
+
 <script type="text/javascript" src="{% static 'lumoapp/js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'lumoapp/js/bootstrap.min.js' %}"></script>
 
@@ -65,7 +82,6 @@
   	if (text.length > 18) {
   		$(this).html(text.substr(0, 18) + '...')
   	}
-	  // console.log( index + ": " + text );
 	});
 
   $( ".event-detail-location-div" ).each(function( index ) {
@@ -75,6 +91,12 @@
   	}
 	});
 
+	$("#footer-alarm-div").click(function() {
+		console.log("alarm!");
+	});
 
+	$("#footer-bed-div").click(function() {
+		console.log("bed time!");
+	});
 	
 </script>
