@@ -68,6 +68,7 @@ class Command(BaseCommand):
     # save events to model
     for evt in events:
       start_time = evt['start']['dateTime']
+      end_time = evt['end']['dateTime']
       location = evt['location'] if 'location' in evt else ""
       description = evt['summary']
 
@@ -80,13 +81,13 @@ class Command(BaseCommand):
         if (not evt['reminders']['useDefault']) and ('overrides' in evt['reminders']):
           for rem in evt['reminders']['overrides']:
             reminder_time = max(reminder_time, int(rem['minutes']))
-          evt_entry = gcal_models.Event.objects.create_reminder(user, start_time,
+          evt_entry = gcal_models.Event.objects.create_reminder(user, start_time, end_time, 
             reminder_time, location, description)
         else:
           # add the default reminder
           reminder_time = 30
           evt_entry = gcal_models.Event.objects.create_reminder(user,
-            start_time, reminder_time, location, description)
+            start_time, end_time, reminder_time, location, description)
         evt_entry.save()
 
 

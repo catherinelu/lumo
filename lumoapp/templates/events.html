@@ -28,7 +28,7 @@
     	<div class="event-entry-detail">
     	  <div class="row event-detail-description-div"><b>{{ evt.description}}</b></div>
     		<div class="row event-detail-datetime-div">{{ evt.start_time.month }} {{ evt.start_time.date}},
-    										 {{ evt.start_time.hour}}:{{ evt.start_time.minute}} {{ evt.start_time.suffix}} - end_time
+    										 {{ evt.start_time.hour}}:{{ evt.start_time.minute}} {{ evt.start_time.suffix}} - {{ evt.end_time.hour}}:{{ evt.end_time.minute}} {{ evt.end_time.suffix}}
     		</div>
     		<div class="row event-detail-location-div">{{ evt.location}}</div>
     		<div class="row event-detail-remind-div">Reminder scheduled {{ evt.reminder_time}} min ahead</div>

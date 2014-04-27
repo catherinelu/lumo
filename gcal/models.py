@@ -21,14 +21,15 @@ class CredentialsModel(models.Model):
 
 # create Manager for the model
 class EventManager(models.Manager):
-  def create_reminder(self, user, start_time, reminder_time=30, location="", description=""):
-    event = self.create(user=user, start_time=start_time, reminder_time=reminder_time, location=location, description=description)
+  def create_reminder(self, user, start_time, end_time, reminder_time=30, location="", description=""):
+    event = self.create(user=user, start_time=start_time, end_time=end_time, reminder_time=reminder_time, location=location, description=description)
     # do something with the reminder
     return event
 
 class Event(models.Model):
   user = models.ForeignKey(User)
   start_time = models.CharField(max_length=200)
+  end_time = models.CharField(max_length=200)
   reminder_time = models.IntegerField(default=30)
   location = models.CharField(max_length=200)
   description = models.CharField(max_length=200)
