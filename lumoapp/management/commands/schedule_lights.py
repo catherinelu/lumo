@@ -25,11 +25,14 @@ class Command(BaseCommand):
   helps = 'try to schedule lights'
 
   def handle(self, *args, **options):
-    events = gcal_models.Event.objects.all()
+    user = dummy_user
+    events = gcal_models.Event.objects.filter(notified=False, user=user)
 
     h = hue.Hue()
     h.get_state()
-    light = h.lights.get('l1')
+    light1 = h.lights.get('l1')
+    # light2 = h.lights.get('l2')
+    # light3 = h.lights.get('l3')
 
     self.update_events_in_db()
 
@@ -45,9 +48,10 @@ class Command(BaseCommand):
       print abs(event.reminder_time - min_to_event)
 
       if abs(event.reminder_time - min_to_event) <= 1:
-        print 'TURNING LIGHT ON'
-        light.on()
-        light.toggle()
+        light1.on()
+        light1.toggle()
+        event.notified = True
+        event.save()
 
 
   def update_events_in_db(self):
@@ -61,28 +65,29 @@ class Command(BaseCommand):
     cal_lists = self.retrieve_calendar_list(service)
     events = self.retrieve_events_from_calendar(service, PRIMARY_ID)
 
-    # delete old entries for the user
-    gcal_models.Event.objects.filter(user=user).delete()
     # save events to model
     for evt in events:
-      user_name = user
       start_time = evt['start']['dateTime']
       location = evt['location'] if 'location' in evt else ""
       description = evt['summary']
-      
-      # add the other self defined ones
-      reminder_time = 0
-      if (not evt['reminders']['useDefault']) and ('overrides' in evt['reminders']):
-        for rem in evt['reminders']['overrides']:
-          reminder_time = max(reminder_time, int(rem['minutes']))
-        evt_entry = gcal_models.Event.objects.create_reminder(user_name, start_time,
-          reminder_time, location, description)
-      else:
-        # add the default reminder
-        reminder_time = 30
-        evt_entry = gcal_models.Event.objects.create_reminder(user_name,
-          start_time, reminder_time, location, description)
-      evt_entry.save()
+
+      # See if an event of the same time, description, and user exists. If not,
+      # add it into the database
+      event = gcal_models.Event.objects.filter(start_time=start_time, user=user, description=description)
+      if event.count() == 0: 
+        # add the other self defined ones
+        reminder_time = 0
+        if (not evt['reminders']['useDefault']) and ('overrides' in evt['reminders']):
+          for rem in evt['reminders']['overrides']:
+            reminder_time = max(reminder_time, int(rem['minutes']))
+          evt_entry = gcal_models.Event.objects.create_reminder(user, start_time,
+            reminder_time, location, description)
+        else:
+          # add the default reminder
+          reminder_time = 30
+          evt_entry = gcal_models.Event.objects.create_reminder(user,
+            start_time, reminder_time, location, description)
+        evt_entry.save()
 
 
   def build_service(self, credential):
