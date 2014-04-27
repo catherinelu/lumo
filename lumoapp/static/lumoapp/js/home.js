@@ -5,6 +5,9 @@ $(function() {
   checkForAlarms();
   setInterval(checkForAlarms, 30000);
 
+  checkForDims();
+  setInterval(checkForDims, 30000);
+
 	$( ".event-entry-overview" ).click(function() {
 		$( this ).css( "background-color", "FCFEF5");
 		var cur_detail =  $( this ).next('.event-entry-detail');
@@ -133,6 +136,33 @@ $(function() {
 
         a = alarm;
         tellAppAlarmOccurred(alarm.id);
+      }
+    });
+  }
+
+  function checkForDims() {
+    $.ajax({
+      url: 'check-for-dims/'
+    }).done(function(dim) {
+      if (dim) {
+        console.log(dim);
+        // DO nothing for now
+
+        // var $alert = $('.alert');
+        // $alert.find('.description').html('Time to wake up!');
+        // $alert.find('.time').html(alarm.time)
+        // $alert.modal('show');
+        // $alert.css('display', 'block');
+        
+        // createLightsPattern();
+
+        // $alert.on('hide.bs.modal', function() {
+        //   clearLightPatterns();
+        //   $('#footer-alarm-div img').attr('src', ALARM_PNG);
+        // });
+
+        // a = alarm;
+        // tellAppAlarmOccurred(alarm.id);
       }
     });
   }
