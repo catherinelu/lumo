@@ -31,14 +31,30 @@
 	  $alert.modal();
 
 		$("#footer-alarm-div").click(function() {
+			$alert.find('.modal-content').empty();
+
 			$alert.modal('show');
 	  	$alert.css('display', 'block');
-		  $alert.find('.modal-content').html("Alarm clock");
+
+	  	// build the container and other divs 
+	  	var $container = $( "<div class='container-fluid'/>" );
+	  	var $alarm_row = $( "<div class='row alarm-set-div'/>" );
+	  	var $confirm_row = $( "<div class='row alarm-confirm-div'/>" );
+
+	  	// 
+	  	$alarm_row.html("row goes here");
+	  	$confirm_row.html("button goes here");
+
+	  	$container.append($alarm_row);
+	  	$container.append($confirm_row);
+
+		  $alert.find('.modal-content').append($container);
+		  
 		});
 
-		$alert.on('hide.bs.modal', function() {
-      console.log("model goes away now!")
-    });
+		// $alert.on('hide.bs.modal', function() {
+  	//   console.log("model goes away now!")
+  	// });
 
 		$("#footer-bed-div").click(function() {
 			$alert.modal('show');
