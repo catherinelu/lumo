@@ -110,6 +110,12 @@ body {
 	top: 30%;
 }
 
+/* for the end event reminder modal */
+.end-event-modal {
+	top: 30%;
+}
+
+
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;

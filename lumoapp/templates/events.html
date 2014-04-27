@@ -33,7 +33,7 @@
     	  		<b>{{ evt.description}}</b>
     	  	</div>
      	  	<div class="col-xs-4 event-detail-remind-div event-detail-row">
-     	  		<img src="{% static 'lumoapp/img/tones-20.png' %}"></img> {{ evt.reminder_time}} min
+     	  		<img id="event-remind-img" src="{% static 'lumoapp/img/tones-20.png' %}"></img> <!-- {{ evt.reminder_time}} min -->
     	  	</div>
     	  </div>
     		<div class="row event-detail-datetime-div event-detail-row">{{ evt.start_time.month }} {{ evt.start_time.date}},
@@ -95,6 +95,17 @@
       <div class='container-fluid'>
       	<div class='row dim-set-div'></div>
       	<div class='row dim-confirm-div'></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade end-event-modal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <!-- Dynamically add content. -->
+      <div class='container-fluid'>
+      	<div class='row end-event-description'></div>
       </div>
     </div>
   </div>

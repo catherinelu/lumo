@@ -15,18 +15,39 @@ $(function() {
 
   // cut the tail of text that's too long
   $( ".event-description-div" ).each(function( index ) {
-  	var text = $( this ).text()
+  	var text = $( this ).text();
   	if (text.length > 18) {
   		$(this).html(text.substr(0, 18) + '...')
   	}
 	});
 
   $( ".event-detail-location-div" ).each(function( index ) {
-  	var text = $( this ).text()
+  	var text = $( this ).text();
   	if (text.length > 0) {
   		$(this).html('@' + text)
   	}
 	});
+
+
+  $(".event-detail-remind-div").each(function( index ) {
+    $(this).click( function() {
+      var $end_event = $('.end-event-modal');
+      $end_event.modal('show');
+      $end_event.css('display', 'block');
+      var $img_element = $(this).find("#event-remind-img");
+      console.log($img_element.attr("src"));
+      var img_src_suffix = $img_element.attr("src").slice(-12);
+      console.log(img_src_suffix);
+      if (img_src_suffix === "tones-20.png") {
+        $end_event.find('.end-event-description').html('End event reminder is set');
+        $img_element.attr('src', '/static/lumoapp/img/bells-25.png');
+      } else {
+        $end_event.find('.end-event-description').html('Cancelled end event reminder');
+        $img_element.attr('src', '/static/lumoapp/img/tones-20.png');
+      }
+      setTimeout(function() { $end_event.modal('hide'); }, 2000);
+    });
+  });
 
 	$("#footer-alarm-div").click(function() {
 		var $alert = $('.alarm-modal');
