@@ -48,5 +48,12 @@
 	  }
 	});
 
+  $( ".event-description-div" ).each(function( index ) {
+  	var text = $( this ).text()
+  	if (text.length > 30) {
+  		$(this).html(text.substr(0, 30) + '...')
+  	}
+	  // console.log( index + ": " + text );
+	});
 	
 </script>
