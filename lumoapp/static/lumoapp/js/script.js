@@ -20,26 +20,38 @@ $(function() {
 
   function createLightsPattern() {
     var interval = setInterval(function() {
-      changeLights(true, 255, 255, 5000, 1);
-      changeLights(true, 255, 255, 5000, 2);
-    }, 2000);
-    intervals.push(interval);
-
-    interval = setInterval(function() {
-      changeLights(true, 0, 255, 5000, 1);
-      changeLights(true, 0, 255, 5000, 2);
-    }, 4000);
-    intervals.push(interval);
-
-    interval = setInterval(function() {
-      changeLights(true, 100, 100, 25000, 3);
-    }, 3000);
-    intervals.push(interval);
-
-    interval = setInterval(function() {
-      changeLights(true, 0, 100, 25000, 3);
+      changeLightsOfAll(true, 100, 200, 20000);
     }, 6000);
     intervals.push(interval);
+
+    setTimeout(function() {
+      var interval = setInterval(function() {
+        changeLightsOfAll(true, 100, 255, 65535);
+      }, 6000);
+      intervals.push(interval);
+    }, 3000);
+
+    // var interval = setInterval(function() {
+    //   changeLights(true, 255, 255, 5000, 1);
+    //   changeLights(true, 255, 255, 5000, 2);
+    // }, 2000);
+    // intervals.push(interval);
+
+    // interval = setInterval(function() {
+    //   changeLights(true, 0, 255, 5000, 1);
+    //   changeLights(true, 0, 255, 5000, 2);
+    // }, 4000);
+    // intervals.push(interval);
+
+    // interval = setInterval(function() {
+    //   changeLights(true, 100, 100, 25000, 3);
+    // }, 3000);
+    // intervals.push(interval);
+
+    // interval = setInterval(function() {
+    //   changeLights(true, 0, 100, 25000, 3);
+    // }, 6000);
+    // intervals.push(interval);
   }
 
   function changeLights(isOn, saturation, brightness, hue_value, light) {
@@ -50,17 +62,30 @@ $(function() {
         on: isOn,
         sat: saturation,
         bri: brightness,
-        hue: hue_value
+        hue: hue_value,
+        transitiontime:20
       })
     });
+  }
+
+  function changeLightsOfAll(isOn, saturation, brightness, hue_value) {
+    $.ajax({
+      url: 'http://' + IP_ADDRESS + '/api/newdeveloper/groups/0/action',
+      type: 'PUT',
+      data: JSON.stringify({
+        on: isOn,
+        sat: saturation,
+        bri: brightness,
+        hue: hue_value,
+        transitiontime:20
+      })
+    });    
   }
 
   function checkForNotifications() {
     $.ajax({
       url: 'check-for-notifications/'
     }).done(function(notificationId) {
-      n = notificationId;
-      console.log(n);
       if (notificationId) {
         $alert.modal('show');
         $alert.css('display', 'block');
@@ -73,9 +98,8 @@ $(function() {
             clearInterval(interval);
           });
           intervals = []
-          for (var i = 1; i <= 3; i++) {
-            changeLights(true, 0, 255, 65535, i);
-          }
+          // deleteAllSchedules();
+          changeLightsOfAll(true, 0, 255, 65535);
         });
 
         notifyWithLights(notificationId);
@@ -96,4 +120,14 @@ $(function() {
       $alert.modal('hide');
     }
   });
+
+  function deleteAllSchedules() {
+    for (var i = 0; i < 100; i++) {
+      $.ajax({
+        url: 'http://' + IP_ADDRESS + '/api/newdeveloper/schedules/' + i,
+        type: 'DELETE',
+        async: false
+      });
+    }
+  }
 });
