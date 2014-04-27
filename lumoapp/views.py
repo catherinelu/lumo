@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.core.management import call_command
 from django.core.urlresolvers import reverse
 # django authentication
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from gcal import models as gcal_models
 from hue import Hue
+from lumoproject import settings
+from oauth2client import xsrfutil
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.django_orm import Storage
 import os, logging, httplib2
@@ -23,7 +26,7 @@ FLOW = flow_from_clientsecrets(CLIENT_SECRETS,
       'https://www.googleapis.com/auth/calendar.readonly',
     ],
     # change it to production website once deployed
-    redirect_uri='http://localhost:8000/gcal/oauth2callback'
+    redirect_uri='http://localhost:8000/oauth2callback'
     # redirect_uri='./gcal/oauth2callback'
 )
 
@@ -36,24 +39,21 @@ except ObjectDoesNotExist:
   dummy_user.save()
 
 
-def get_google_authentication(request):
-  # use dummy_user
+def get_google_authentication(request, credential):
   user = dummy_user
-
-  storage = Storage(gcal_models.CredentialsModel, 'id', user, 'credential')
-  credential = storage.get()
 
   if credential is None or credential.invalid == True:
     FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
                                                    user)
     authorize_url = FLOW.step1_get_authorize_url()
+    print authorize_url
     return HttpResponseRedirect(authorize_url)
-  else:
+  elif not request.user.is_authenticated():
     # authenticate user in django
     user = authenticate(username=DUMMY_USERNAME, password=DUMMY_USERNAME)
     login(request, user)
 
-    return HttpResponseRedirect(reverse('events'))
+  return HttpResponseRedirect(reverse('events'))
 
 
 def auth_return(request):
@@ -64,17 +64,22 @@ def auth_return(request):
                                 user):
     return  HttpResponseBadRequest()
   credential = FLOW.step2_exchange(request.REQUEST)
-  storage = Storage(CredentialsModel, 'id', user, 'credential')
+  storage = Storage(gcal_models.CredentialsModel, 'id', user, 'credential')
   storage.put(credential)
-  return HttpResponseRedirect("/gcal/")
+  return HttpResponseRedirect('/')
 
 
 def events(request):
-  if not request.user.is_authenticated():
-    get_google_authentication(request)
+  # use dummy_user
+  user = dummy_user
+  storage = Storage(gcal_models.CredentialsModel, 'id', user, 'credential')
+  credential = storage.get()
+  if credential is None or credential.invalid == True or not request.user.is_authenticated():
+    return get_google_authentication(request, credential)
 
   all_entries = sorted(gcal_models.Event.objects.all(), key=lambda x: x.start_time)
 
+  call_command('schedule_lights', '')
   events = []
   # preprocessing the events data for later rendering at html
   for entry in all_entries:
