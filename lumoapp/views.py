@@ -26,8 +26,8 @@ FLOW = flow_from_clientsecrets(CLIENT_SECRETS,
       'https://www.googleapis.com/auth/calendar.readonly',
     ],
     # change it to production website once deployed
-    # redirect_uri='http://localhost:8000/oauth2callback'
-    redirect_uri='http://192.168.1.159:8000/oauth2callback'
+    redirect_uri='http://localhost:8000/oauth2callback'
+    # redirect_uri='http://192.168.1.159:8000/oauth2callback'
     # redirect_uri='./gcal/oauth2callback'
 )
 
