@@ -33,14 +33,23 @@ body {
 .event-entry-detail {
 	background-color: #C6E5D9;
 	display: none;
-	padding: 10 30 10 30;
+	padding: 10 15 10 15;
 	margin-left: -15px;
 	margin-right: -15px;
 	color: #556270;
 }
 
+.event-detail-row {
+	padding-left: 15px;
+	padding-bottom: 5px;
+}
+
 .event-detail-description-div {
 	color: #2E2633;	
+}
+
+.event-detail-remind-div {
+	text-align: right;
 }
 /*	$( "." ).css("min-height", "40");
 	$( ".event-entry-div" ).css("padding", "2% 0% 2% 0%");
