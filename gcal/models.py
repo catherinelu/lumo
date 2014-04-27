@@ -27,6 +27,9 @@ class Event(models.Model):
   description = models.CharField(max_length=200)
   notified = models.BooleanField(default=False)  # Lights notified user
   should_notify = models.BooleanField(default=False)  # Lights should notify user, but haven't yet
+  remind_end_time = models.BooleanField(default=False)
+  end_time_notified = models.BooleanField(default=False)
+  end_time_should_notify = models.BooleanField(default=False)
 
   objects = EventManager()
 

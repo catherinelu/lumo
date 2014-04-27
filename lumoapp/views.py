@@ -145,12 +145,17 @@ def numToMonth(num):
 
 
 def check_for_notifications(request):
-  events = gcal_models.Event.objects.filter(should_notify=True, notified=False
+  start_events = gcal_models.Event.objects.filter(should_notify=True, notified=False
     ).order_by('start_time')
-  if events.count() > 0:
-    return http.HttpResponse(events[0].id, mimetype='application/json')
-  else:
-    return http.HttpResponse(None, mimetype='application/json')
+  if start_events.count() > 0:
+    return http.HttpResponse(json.dumps({'id': start_events[0].id, 'is_end': False}), mimetype='application/json')
+
+  end_events = gcal_models.Event.objects.filter(end_time_should_notify=True,
+    end_time_notified=False, remind_end_time=True)
+  if end_events.count() > 0:
+    return http.HttpResponse(json.dumps({'id': end_events[0].id, 'is_end': True}), mimetype='application/json')
+
+  return http.HttpResponse(None, mimetype='application/json')
 
 
 def check_for_alarms(request):
@@ -166,11 +171,18 @@ def check_for_alarms(request):
     return http.HttpResponse(None, mimetype='application/json')
 
 
-def notification_occurred(request, notification_id):
+def start_notification_occurred(request, notification_id):
   event = gcal_models.Event.objects.get(pk=notification_id)
   event.notified = True
   event.save()
   return http.HttpResponse(200)
+
+
+def end_notification_occurred(request, notification_id):
+  event = gcal_models.Event.objects.get(pk=notification_id)
+  event.end_time_notified = True
+  event.save()
+  return http.HttpResponse(200)  
 
 
 def alarm_occurred(request, alarm_id):
@@ -196,3 +208,26 @@ def save_alarm(request, hour, minutes):
   alarm_event.save()
 
   return http.HttpResponse(200)
+
+
+def save_dim(request, minutes_to_dim):
+  pst_timezone = pytz.timezone('US/Pacific')
+  bed_time = pst_timezone.localize(datetime.today())
+  dim_event = lumo_models.BedEvent(user=dummy_user, bed_time=bed_time,
+    dim_time=minutes_to_dim)
+  return http.HttpResponse(200)
+
+
+def set_end_event_reminder(request, event_id):
+  event = gcal_models.Event.objects.get(pk=event_id)
+  event.remind_end_time = True
+  event.save()
+  return http.HttpResponse(200)
+
+
+def cancel_end_event_reminder(request, event_id):
+  event = gcal_models.Event.objects.get(pk=event_id)
+  event.remind_end_time = False
+  event.save()
+  return http.HttpResponse(200)
+

@@ -37,7 +37,7 @@
     	  	</div>
     	  </div>
     		<div class="row event-detail-datetime-div event-detail-row">{{ evt.start_time.month }} {{ evt.start_time.date}},
-    										 {{ evt.start_time.hour}}:{{ evt.start_time.minute}} {{ evt.start_time.suffix}} - {{ evt.end_time.hour}}:{{ evt.end_time.minute}} {{ evt.end_time.suffix}}
+    										 {{ evt.start_time.hour}}:{{ evt.start_time.minute}} {{ evt.start_time.suffix}} - <span class="end-time">{{ evt.end_time.hour}}:{{ evt.end_time.minute}} {{ evt.end_time.suffix}}</span>
     		</div>
     		<div class="row event-detail-location-div event-detail-row">{{ evt.location}}</div>
     	</div>
@@ -65,10 +65,10 @@
 <div class="modal fade alert" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
-      <span class="time">
+      <span class="description">
         <!-- Dynamically add content. -->
       </span>
-      <span class="description">
+      <span class="time">
         <!-- Dynamically add content. -->
       </span>
     </div>
