@@ -143,3 +143,9 @@ def check_for_notifications(request):
     return http.HttpResponse(json.dumps(event), mimetype='application/json')
   else:
     return http.HttpResponse(None, mimetype='application/json')
+
+
+def notification_occurred(request, notification_id):
+  event = gcal_models.Event.objets.get(pk=notification_id)
+  event.delete()
+  return http.HttpResponse(200)
