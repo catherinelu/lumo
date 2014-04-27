@@ -27,9 +27,8 @@
 	  	}
 		});
 
-		var $alert = $('.alarm-modal');
-
 		$("#footer-alarm-div").click(function() {
+			var $alert = $('.alarm-modal');
 			$alert.modal('show');
 	  	$alert.css('display', 'block');
 
@@ -46,7 +45,7 @@
 	  	$confirm_row.html("Save");
 		 
 		 	$confirm_row.click(function() {
-		 		console.log("clicked!");
+		 		$alert.modal('hide');
 		 	});
 		});
 
@@ -55,8 +54,21 @@
   	// });
 
 		$("#footer-bed-div").click(function() {
+			var $alert = $('.bed-modal');
 			$alert.modal('show');
 	  	$alert.css('display', 'block');
-		  $alert.find('.modal-content').html("Bed time");
+
+	  	// fill in the set timing 
+	  	var $set_row = $( ".dim-set-div" );
+
+	  	// added the input boxes
+	  	$set_row.html("Dimming in <span>10 min</span>...");
+
+	  	var $confirm_row = $( ".dim-confirm-div" );
+	  	$confirm_row.html("OK");
+		 
+		 	$confirm_row.click(function() {
+		 		$alert.modal('hide');
+		 	});
 		});
 	});

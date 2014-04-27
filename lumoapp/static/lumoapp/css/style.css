@@ -105,6 +105,11 @@ body {
 	background-color: #F7E4BE;
 }
 
+/* for the bed modal */
+.bed-modal {
+	top: 30%;
+}
+
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
