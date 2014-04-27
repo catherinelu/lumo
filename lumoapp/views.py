@@ -82,9 +82,36 @@ def events(request):
   all_entries = sorted(gcal_models.Event.objects.all(), key=lambda x: x.start_time)
 
   call_command('schedule_lights', '')
-  events = []
   # preprocessing the events data for later rendering at html
+
+  events_to_return = []
+
   for entry in all_entries:
+    # for the end timing data
+    time_zone_end_index = entry.end_time.rfind('-')
+    end_time_str = entry.end_time[:time_zone_end_index]
+    end_time = time.strptime(end_time_str, '%Y-%m-%dT%H:%M:%S')
+
+    # if the event is already over, don't show it
+    cur_time = time.localtime()
+    if time.mktime(cur_time) - time.mktime(end_time) > 0:
+      continue
+
+    parsed_time = {'year': end_time[0], 'month': numToMonth(end_time[1]), 'date': end_time[2],
+               'hour': end_time[3], 'minute': end_time[4], 'suffix': 'am' }
+
+    if parsed_time['hour'] > 12:
+      parsed_time['hour'] -= 12
+      parsed_time['suffix'] = 'pm'
+
+    if parsed_time['hour'] == 12:
+      parsed_time['suffix'] = 'pm'
+
+    if len(str(parsed_time['minute'])) < 2:
+      parsed_time['minute'] = '0' + str(parsed_time['minute'])
+
+    entry.end_time = parsed_time
+
     # for the start timing data
     time_zone_start_index = entry.start_time.rfind('-')
     start_time_str = entry.start_time[:time_zone_start_index]
@@ -104,28 +131,9 @@ def events(request):
       parsed_time['minute'] = '0' + str(parsed_time['minute'])
 
     entry.start_time = parsed_time
+    events_to_return.append(entry)
 
-    # for the end timing data
-    time_zone_end_index = entry.end_time.rfind('-')
-    end_time_str = entry.end_time[:time_zone_end_index]
-    end_time = time.strptime(end_time_str, '%Y-%m-%dT%H:%M:%S')
-    
-    parsed_time = {'year': end_time[0], 'month': numToMonth(end_time[1]), 'date': end_time[2],
-               'hour': end_time[3], 'minute': end_time[4], 'suffix': 'am' }
-
-    if parsed_time['hour'] > 12:
-      parsed_time['hour'] -= 12
-      parsed_time['suffix'] = 'pm'
-
-    if parsed_time['hour'] == 12:
-      parsed_time['suffix'] = 'pm'
-
-    if len(str(parsed_time['minute'])) < 2:
-      parsed_time['minute'] = '0' + str(parsed_time['minute'])
-
-    entry.end_time = parsed_time
-
-  return render(request, 'events.html', {'events': all_entries})
+  return render(request, 'events.html', {'events': events_to_return})
 
 
 def numToMonth(num):
