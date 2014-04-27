@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django import http
 from django.core.management import call_command
 from django.core.urlresolvers import reverse
 # django authentication
@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from gcal import models as gcal_models
 from hue import Hue
+import json
 from lumoproject import settings
 from oauth2client import xsrfutil
 from oauth2client.client import flow_from_clientsecrets
@@ -48,13 +49,13 @@ def get_google_authentication(request, credential):
                                                    user)
     authorize_url = FLOW.step1_get_authorize_url()
     print authorize_url
-    return HttpResponseRedirect(authorize_url)
+    return http.HttpResponseRedirect(authorize_url)
   elif not request.user.is_authenticated():
     # authenticate user in django
     user = authenticate(username=DUMMY_USERNAME, password=DUMMY_USERNAME)
     login(request, user)
 
-  return HttpResponseRedirect(reverse('events'))
+  return http.HttpResponseRedirect(reverse('events'))
 
 
 def auth_return(request):
@@ -63,11 +64,11 @@ def auth_return(request):
 
   if not xsrfutil.validate_token(settings.SECRET_KEY, request.REQUEST['state'],
                                 user):
-    return  HttpResponseBadRequest()
+    return  http.HttpResponseBadRequest()
   credential = FLOW.step2_exchange(request.REQUEST)
   storage = Storage(gcal_models.CredentialsModel, 'id', user, 'credential')
   storage.put(credential)
-  return HttpResponseRedirect('/')
+  return http.HttpResponseRedirect('/')
 
 
 def events(request):
@@ -126,7 +127,19 @@ def events(request):
 
   return render(request, 'events.html', {'events': all_entries})
 
+
 def numToMonth(num):
   month = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return month[num];
 
+
+def check_for_notifications(request):
+  events = gcal_models.Event.objects.filter(should_notify=True, notified=False
+    ).order_by('start_time')
+  if events.count() > 0:
+    event = {
+      'id': events[0].id
+    }
+    return http.HttpResponse(json.dumps(event), mimetype='application/json')
+  else:
+    return http.HttpResponse(None, mimetype='application/json')

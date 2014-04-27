@@ -33,7 +33,8 @@ class Event(models.Model):
   reminder_time = models.IntegerField(default=30)
   location = models.CharField(max_length=200)
   description = models.CharField(max_length=200)
-  notified = models.BooleanField(default=False)
+  notified = models.BooleanField(default=False)  # Lights notified user
+  should_notify = models.BooleanField(default=False)  # Lights should notify user, but haven't yet
 
   objects = EventManager()
 

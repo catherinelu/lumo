@@ -26,13 +26,7 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     user = dummy_user
-    events = gcal_models.Event.objects.filter(notified=False, user=user)
-
-    h = hue.Hue()
-    h.get_state()
-    light1 = h.lights.get('l1')
-    # light2 = h.lights.get('l2')
-    # light3 = h.lights.get('l3')
+    events = gcal_models.Event.objects.filter(notified=False, should_notify=False, user=user)
 
     self.update_events_in_db()
 
@@ -48,9 +42,7 @@ class Command(BaseCommand):
       print abs(event.reminder_time - min_to_event)
 
       if abs(event.reminder_time - min_to_event) <= 1:
-        light1.on()
-        light1.toggle()
-        event.notified = True
+        event.should_notify = True
         event.save()
 
 

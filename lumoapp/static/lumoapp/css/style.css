@@ -59,3 +59,11 @@ body {
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
+
+.alert {
+	top: 250px;
+}
+
+.modal-content {
+	padding: 20px;
+}
