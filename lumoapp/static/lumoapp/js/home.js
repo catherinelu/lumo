@@ -30,25 +30,24 @@
 		var $alert = $('.alarm-modal');
 
 		$("#footer-alarm-div").click(function() {
-			$alert.find('.modal-content').empty();
-
 			$alert.modal('show');
 	  	$alert.css('display', 'block');
 
-	  	// build the container and other divs 
-	  	var $container = $( "<div class='container-fluid'/>" );
-	  	var $alarm_row = $( "<div class='row alarm-set-div'/>" );
-	  	var $confirm_row = $( "<div class='row alarm-confirm-div'/>" );
+	  	// fill in the set timing 
+	  	var $set_row = $( ".alarm-set-div" );
 
-	  	// 
-	  	$alarm_row.html("row goes here");
-	  	$confirm_row.html("button goes here");
+	  	// added the input boxes
+	  	$set_row.html("Wake me up at &nbsp; <span class='alarm-time-span'> \
+	  		<input class='time-input-div' type='number' min='0' max='23' name='input-hour' id='input-hour' value='08'> : \
+	  		<input  class='time-input-div' type='number' min='0' max='59' name='input-min' id='input-min' value='00'></span>"
+	  		);
 
-	  	$container.append($alarm_row);
-	  	$container.append($confirm_row);
-
-		  $alert.find('.modal-content').append($container);
-		  
+	  	var $confirm_row = $( ".alarm-confirm-div" );
+	  	$confirm_row.html("Save");
+		 
+		 	$confirm_row.click(function() {
+		 		console.log("clicked!");
+		 	});
 		});
 
 		// $alert.on('hide.bs.modal', function() {

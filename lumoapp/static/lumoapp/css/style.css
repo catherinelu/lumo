@@ -5,6 +5,7 @@ h1 {
 
 body {
 	font-family: 'Lato', 'sans-serif';
+	padding-bottom: 50px;
 }
 
 .event-time-div {
@@ -75,7 +76,7 @@ body {
 }
 
 .alarm-set-div {
-	font-size: 24px;
+	font-size: 18px;
 	text-align: center;
 
 	padding-bottom: 20px;
@@ -84,3 +85,33 @@ body {
 .alarm-confirm-div {
 	text-align: center;
 }
+
+.alarm-time-span {
+	font-size: 24px;
+	color: orange;
+}
+
+.time-input-div {
+	width: 40px;
+	display: inline-block;
+}
+
+.alarm-confirm-div {
+	font-size: 20px;
+	margin-left: -30px;
+	margin-right: -30px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	background-color: #F7E4BE;
+}
+
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+
+
+
+
