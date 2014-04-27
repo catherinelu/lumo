@@ -74,42 +74,4 @@
 <script type="text/javascript" src="{% static 'lumoapp/js/bootstrap.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'lumoapp/js/modal.js' %}"></script>
 <script type="text/javascript" src="{% static 'lumoapp/js/script.js' %}"></script>
-
-<script type="text/javascript">
-	$( ".event-entry-overview" ).click(function() {
-	// $( ".event-entry-overview" ).click(function() {
-		// 	console.log($( this ).css( "background-color"));
-		$( this ).css( "background-color", "FCFEF5");
-		var cur_detail =  $( this ).next('.event-entry-detail');
-		if (cur_detail.is( ":hidden" ) ) {
-	    cur_detail.slideDown();
-	  } else {
-	  	$( this ).css( "background-color", "FFFFFF");
-	    cur_detail.slideUp();
-	  }
-	});
-
-  // cut the tail of text that's too long
-  $( ".event-description-div" ).each(function( index ) {
-  	var text = $( this ).text()
-  	if (text.length > 18) {
-  		$(this).html(text.substr(0, 18) + '...')
-  	}
-	});
-
-  $( ".event-detail-location-div" ).each(function( index ) {
-  	var text = $( this ).text()
-  	if (text.length > 0) {
-  		$(this).html('@' + text)
-  	}
-	});
-
-	$("#footer-alarm-div").click(function() {
-		console.log("alarm!");
-	});
-
-	$("#footer-bed-div").click(function() {
-		console.log("bed time!");
-	});
-	
-</script>
+<script type="text/javascript" src="{% static 'lumoapp/js/home.js' %}"></script>
