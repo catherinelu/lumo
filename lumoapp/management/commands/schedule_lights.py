@@ -29,25 +29,17 @@ class Command(BaseCommand):
   def handle(self, *args, **options):
     user = dummy_user
 
-    # Go through calendar events and see if any require notifications
-    events = gcal_models.Event.objects.filter(notified=False, should_notify=False, user=user)
     self.update_events_in_db()
 
+    # Go through calendar events and see if any require notifications
+    events = gcal_models.Event.objects.filter(notified=False, should_notify=False, user=user)
     for event in events:
-      # Get the start time as a time struct
-      time_zone_start_index = event.start_time.rfind('-')
-      start_time_str = event.start_time[:time_zone_start_index]
-      start_time = time.strptime(start_time_str, '%Y-%m-%dT%H:%M:%S')
+      self.look_if_time_to_notify(event, event.start_time, False)
 
-      cur_time = time.localtime()
-      min_to_event = (time.mktime(start_time) - time.mktime(cur_time)) / 60
-
-      print abs(event.reminder_time - min_to_event)
-
-      if abs(event.reminder_time - min_to_event) <= 1:
-        event.should_notify = True
-        event.save()
-
+    events = gcal_models.Event.objects.filter(end_time_notified=False,
+      end_time_should_notify=False, user=user, remind_end_time=True)
+    for event in events:
+      self.look_if_time_to_notify(event, event.end_time, True)
 
     # Go through alarms and see if any require notifications
     alarms = lumo_models.AlarmEvent.objects.filter(notified=False, should_notify=False, user=user)
@@ -57,6 +49,27 @@ class Command(BaseCommand):
       if time_difference < timedelta(minutes=1):
         alarm.should_notify = True
         alarm.save()
+
+
+  def look_if_time_to_notify(self, event, time_str, is_end):
+    # Get the start time as a time struct
+    time_zone_start_index = time_str.rfind('-')
+    time_str = time_str[:time_zone_start_index]
+    time_struct = time.strptime(time_str, '%Y-%m-%dT%H:%M:%S')
+
+    cur_time = time.localtime()
+    min_to_event = (time.mktime(time_struct) - time.mktime(cur_time)) / 60
+
+    print abs(event.reminder_time - min_to_event)
+
+    if not is_end:
+      if abs(event.reminder_time - min_to_event) <= 1:
+        event.should_notify = True
+        event.save()
+    else:
+      if min_to_event <= 2:
+        event.end_time_should_notify = True
+        event.save()
 
 
   def update_events_in_db(self):

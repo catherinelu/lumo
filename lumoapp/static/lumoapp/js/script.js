@@ -69,12 +69,20 @@ $(function() {
   checkForNotifications();
   setInterval(checkForNotifications, 30000);
 
-  function notifyWithLights(notificationId) {
-    var notification = $('*[data-id=' + notificationId + ']');
-    var description = notification.find('.event-description-div').html();
-    var time = notification.find('.event-time-div').html();
+  function notifyWithLights(notification) {
+    var $notification = $('*[data-id=' + notification.id + ']');
+    var description = $notification.find('.event-description-div').html();
     $alert.find('.description').html(description);
-    $alert.find('.time').html(time);
+
+    n = notification;
+    console.log(notification);
+    if (notification.is_end) {
+      var time = $notification.find('.end-time').html();
+      $alert.find('.time').html('ending at ' + time);
+    } else {
+      var time = $notification.find('.event-time-div').html();
+      $alert.find('.time').html('starting at ' + time);      
+    }
 
     if ($alert.css('display') !== 'none') {
       createLightsPattern();
@@ -98,29 +106,36 @@ $(function() {
   function checkForNotifications() {
     $.ajax({
       url: 'check-for-notifications/'
-    }).done(function(notificationId) {
-      if (notificationId) {
+    }).done(function(notification) {
+      if (notification) {
         $alert.modal('show');
         $alert.css('display', 'block');
-        notifyWithLights(notificationId);
-        var lightsNotification = setInterval(function() { notifyWithLights(notificationId); }, 10000);
+        notifyWithLights(notification);
+        var lightsNotification = setInterval(function() { notifyWithLights(notification); }, 10000);
 
         $alert.on('hide.bs.modal', function() {
           clearInterval(lightsNotification);
           clearLightPatterns();
         });
 
-        notifyWithLights(notificationId);
-        tellAppNotificationOccurred(notificationId);
+        notifyWithLights(notification);
+        tellAppNotificationOccurred(notification);
       }
     });
   }
 
-  function tellAppNotificationOccurred(notificationId) {
-    $.ajax({
-      url: 'notification-occurred/' + notificationId + '/',
-      type: 'GET'
-    });
+  function tellAppNotificationOccurred(notification) {
+    if (notification.is_end) {
+      $.ajax({
+        url: 'end-notification-occurred/' + notification.id + '/',
+        type: 'GET'
+      });
+    } else {
+      $.ajax({
+        url: 'start-notification-occurred/' + notification.id + '/',
+        type: 'GET'
+      });      
+    }
   }
 
   $('body').on('click', function() {

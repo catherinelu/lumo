@@ -36,19 +36,32 @@ $(function() {
 
 
   $(".event-detail-remind-div").each(function( index ) {
-    $(this).click( function() {
+    $(this).click( function(event) {
+    	var $currentTarget = $(event.currentTarget);
+    	var eventId = $currentTarget.parents('.event-entry-div').attr('data-id');
+
       var $end_event = $('.end-event-modal');
       $end_event.modal('show');
       $end_event.css('display', 'block');
+
       var $img_element = $(this).find("#event-remind-img");
-      console.log($img_element.attr("src"));
       var img_src_suffix = $img_element.attr("src").slice(-12);
-      console.log(img_src_suffix);
+
       if (img_src_suffix === "tones-20.png") {
-        $end_event.find('.end-event-description').html('Aha, end of event reminder is set');
+        $end_event.find('.end-event-description').html('An end of event reminder is set');
+
+        $.ajax({
+        	url: 'set-end-event-reminder/' + eventId + '/'
+        });
+
         $img_element.attr('src', '/static/lumoapp/img/bells-25.png');
       } else {
-        $end_event.find('.end-event-description').html('End of event reminder cancelled');
+        $end_event.find('.end-event-description').html('Your end of event reminder is cancelled');
+
+        $.ajax({
+        	url: 'cancel-end-event-reminder/' + eventId + '/'
+        });
+
         $img_element.attr('src', '/static/lumoapp/img/tones-20.png');
       }
       setTimeout(function() { $end_event.modal('hide'); }, 3000);
