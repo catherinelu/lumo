@@ -39,13 +39,13 @@ $(function() {
       var img_src_suffix = $img_element.attr("src").slice(-12);
       console.log(img_src_suffix);
       if (img_src_suffix === "tones-20.png") {
-        $end_event.find('.end-event-description').html('End event reminder is set');
+        $end_event.find('.end-event-description').html('Aha, end of event reminder is set');
         $img_element.attr('src', '/static/lumoapp/img/bells-25.png');
       } else {
-        $end_event.find('.end-event-description').html('Cancelled end event reminder');
+        $end_event.find('.end-event-description').html('End of event reminder cancelled');
         $img_element.attr('src', '/static/lumoapp/img/tones-20.png');
       }
-      setTimeout(function() { $end_event.modal('hide'); }, 2000);
+      setTimeout(function() { $end_event.modal('hide'); }, 3000);
     });
   });
 
@@ -61,7 +61,7 @@ $(function() {
   	$set_row.html("Wake me up at &nbsp; <span class='alarm-time-span'> \
   		<input class='time-input-div' type='number' min='0' max='23' name='input-hour' id='input-hour' value='08'> : \
   		<input  class='time-input-div' type='number' min='0' max='59' name='input-min' id='input-min' value='00'></span>"
-  		);
+		);
 
   	var $confirm_row = $( ".alarm-confirm-div" );
 	 
@@ -91,12 +91,23 @@ $(function() {
   	// added the input boxes
   	$set_row.html("Dimming in <span>10 min</span>...");
 
+   // added the input boxes
+    $set_row.html("Dimming in &nbsp; <span class='alarm-time-span'> \
+      <input class='time-input-div' type='number' min='1' max='30' name='input-dim' id='input-dim' value='10'></span> min..."
+    );
+
   	var $confirm_row = $( ".dim-confirm-div" );
   	$confirm_row.html("OK");
 	 
 	 	$confirm_row.click(function() {
-	 		$alert.modal('hide');
-	 	});
+      var minutes_entered = parseInt($set_row.find('[name="input-dim"]').val(), 10);
+      $.ajax({
+        url: 'save-dim/' + minutes_entered + '/'
+      }).done(function() {
+        $alert.modal('hide');
+      });	 	
+    });   
+
 	});
 
 	function checkForAlarms() {

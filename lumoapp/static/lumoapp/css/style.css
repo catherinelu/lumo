@@ -110,6 +110,23 @@ body {
 	top: 30%;
 }
 
+.dim-set-div {
+	font-size: 18px;
+	text-align: center;
+
+	padding-bottom: 20px;
+}
+
+.dim-confirm-div {
+	text-align: center;
+	font-size: 20px;
+	margin-left: -30px;
+	margin-right: -30px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	background-color: #F7E4BE;
+}
+
 /* for the end event reminder modal */
 .end-event-modal {
 	top: 30%;
