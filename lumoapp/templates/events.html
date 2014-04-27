@@ -25,8 +25,13 @@
 	    	</div>
 	    	<div class="col-xs-7 event-description-div">{{ evt.description }}</div>
     	</div>
-    	<div class="row event-entry-detail">
-    		<div>Detail</div>
+    	<div class="event-entry-detail">
+    		<div class="row event-detail-datetime-div">{{ evt.start_time.month }} {{ evt.start_time.date}},
+    										 {{ evt.start_time.hour}}:{{ evt.start_time.minute}} {{ evt.start_time.suffix}} - end_time
+    		</div>
+    		<div class="row event-detail-description-div">Event: {{ evt.description}}</div>
+    		<div class="row event-detail-location-div">{{ evt.location}}</div>
+    		<div class="row event-detail-remind-div">Reminder scheduled {{ evt.reminder_time}} min ahead</div>
     	</div>
     </div>
 	{% endfor %}
@@ -48,12 +53,22 @@
 	  }
 	});
 
+	// cut the tail of text that's too long
   $( ".event-description-div" ).each(function( index ) {
   	var text = $( this ).text()
-  	if (text.length > 30) {
-  		$(this).html(text.substr(0, 30) + '...')
+  	if (text.length > 18) {
+  		$(this).html(text.substr(0, 18) + '...')
   	}
 	  // console.log( index + ": " + text );
 	});
+
+  $( ".event-detail-location-div" ).each(function( index ) {
+  	var text = $( this ).text()
+  	if (text.length > 0) {
+  		$(this).html('At:' + text)
+  	}
+	});
+
+
 	
 </script>
