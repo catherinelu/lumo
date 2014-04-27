@@ -15,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^notification-occurred/(?P<notification_id>\d+)/$',
         'lumoapp.views.notification_occurred'),
     url(r'^alarm-occurred/(?P<alarm_id>\d+)/$', 'lumoapp.views.alarm_occurred'),
-    url(r'^save-alarm/(?P<hour>\d+)/(?P<minutes>\d+)/$', 'lumoapp.views.save_alarm'),    
+    url(r'^save-alarm/(?P<hour>\d+)/(?P<minutes>\d+)/$', 'lumoapp.views.save_alarm'),  
+    url(r'^save-dim/(?P<minutes>\d+)/$', 'lumoapp.views.save_dim'),
 )
