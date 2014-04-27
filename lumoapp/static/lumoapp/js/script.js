@@ -38,6 +38,7 @@ function createLightsPattern() {
 }
 
 function changeLightsOfAll(isOn, saturation, brightness, hue_value) {
+  console.log('CHANGE LIGHTS OF ALL');
   $.ajax({
     url: 'http://' + IP_ADDRESS + '/api/newdeveloper/groups/0/action',
     type: 'PUT',
@@ -49,6 +50,17 @@ function changeLightsOfAll(isOn, saturation, brightness, hue_value) {
       transitiontime:20
     })
   });    
+}
+
+function clearLightPatterns() {
+  intervals.forEach(function(interval) {
+    clearInterval(interval);
+  });
+  intervals = []
+  // deleteAllSchedules();
+  changeLightsOfAll(true, 0, 255, 65535);
+  setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 2000);
+  setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 4000);          
 }
 
 $(function() {
@@ -95,14 +107,7 @@ $(function() {
 
         $alert.on('hide.bs.modal', function() {
           clearInterval(lightsNotification);
-          intervals.forEach(function(interval) {
-            clearInterval(interval);
-          });
-          intervals = []
-          // deleteAllSchedules();
-          changeLightsOfAll(true, 0, 255, 65535);
-          setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 2000);
-          setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 4000);          
+          clearLightPatterns();
         });
 
         notifyWithLights(notificationId);

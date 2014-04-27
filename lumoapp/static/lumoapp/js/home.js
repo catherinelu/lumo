@@ -1,4 +1,7 @@
 $(function() {
+	var ALARM_PNG = 'static/lumoapp/img/alarm-25.png';
+	var GREEN_ALARM_PNG = 'static/lumoapp/img/alarm-25-green.png';
+
   checkForAlarms();
   setInterval(checkForAlarms, 30000);
 
@@ -72,6 +75,7 @@ $(function() {
 	 			url: 'save-alarm/' + hour_entered + '/' + minutes_entered + '/'
 	 		}).done(function() {
 		 		$alert.modal('hide');
+		 		$('#footer-alarm-div img').attr('src', GREEN_ALARM_PNG);
 	 		});
 	 	});
 	});
@@ -111,31 +115,24 @@ $(function() {
 	});
 
 	function checkForAlarms() {
-		console.log('checing');
     $.ajax({
       url: 'check-for-alarms/'
-    }).done(function(alarmId) {
-    	console.log('done');
-      if (alarmId) {
+    }).done(function(alarm) {
+      if (alarm) {
       	var $alert = $('.alert');
-      	$alert.find('description').html('Ring ring! It\'s your alarm!')
+      	$alert.find('.description').html('Time to wake up!');
+      	$alert.find('.time').html(alarm.time)
         $alert.modal('show');
         $alert.css('display', 'block');
         createLightsPattern();
-        var lightsNotification = setInterval(function() { createLightsPattern(); }, 10000);
 
         $alert.on('hide.bs.modal', function() {
-          clearInterval(lightsNotification);
-          intervals.forEach(function(interval) {
-            clearInterval(interval);
-          });
-          intervals = [];
-          changeLightsOfAll(true, 0, 255, 65535);
-          setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 2000);
-          setTimeout(function() { changeLightsOfAll(true, 0, 255, 65535); }, 4000);          
+        	clearLightPatterns();
+          $('#footer-alarm-div img').attr('src', ALARM_PNG);
         });
 
-        tellAppAlarmOccurred(alarmId);
+        a = alarm;
+        tellAppAlarmOccurred(alarm.id);
       }
     });
   }

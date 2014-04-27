@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 from django.shortcuts import render
 from django import http
@@ -157,7 +157,11 @@ def check_for_alarms(request):
   alarms = lumo_models.AlarmEvent.objects.filter(should_notify=True, notified=False
     ).order_by('alarm_time')
   if alarms.count() > 0:
-    return http.HttpResponse(alarms[0].id, mimetype='application/json')
+    alarm = alarms[0]
+    pst_time = alarm.alarm_time - timedelta(hours=7)
+    time_str = '%d:%d' % (pst_time.hour % 12, pst_time.minute)
+    time_str += ' AM' if pst_time.hour < 12 else ' PM'
+    return http.HttpResponse(json.dumps({'time': time_str, 'id': alarm.id}), mimetype='application/json')
   else:
     return http.HttpResponse(None, mimetype='application/json')
 
@@ -184,7 +188,7 @@ def save_alarm(request, hour, minutes):
 
   # if time already passed for today, then get tomorrow
   if datetime_to_save.hour > hour or datetime_to_save.hour == hour and datetime_to_save.minute > minutes:
-    datetime_to_save = datetime_to_save + datetime.timedelta(days=1)
+    datetime_to_save = datetime_to_save + timedelta(days=1)
 
   datetime_to_save = datetime_to_save.replace(hour=hour, minute=minutes)
 
