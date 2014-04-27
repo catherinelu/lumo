@@ -27,7 +27,8 @@ body {
 
 .event-description-div{
 	font-size: 18;
-	padding-top: 25;
+	/*padding-top: 25;*/
+	padding: 16% 0% 20% 0%;
 }
 
 .event-entry-detail {

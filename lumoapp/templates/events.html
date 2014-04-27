@@ -23,7 +23,9 @@
 	    			{{ evt.start_time.month }} {{ evt.start_time.date}}
 	    		</div> -->
 	    	</div>
-	    	<div class="col-xs-7 event-description-div">{{ evt.description }}</div>
+	    	<div class="col-xs-7">
+	    		<div class="event-description-div">{{ evt.description }}</div>
+	    	</div>
     	</div>
     	<div class="event-entry-detail">
     	  <div class="row">
@@ -75,6 +77,7 @@
 
 <script type="text/javascript">
 	$( ".event-entry-overview" ).click(function() {
+	// $( ".event-entry-overview" ).click(function() {
 		// 	console.log($( this ).css( "background-color"));
 		$( this ).css( "background-color", "FCFEF5");
 		var cur_detail =  $( this ).next('.event-entry-detail');
