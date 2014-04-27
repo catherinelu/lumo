@@ -90,6 +90,9 @@ def events(request):
       parsed_time['hour'] -= 12
       parsed_time['suffix'] = 'pm'
 
+    if parsed_time['hour'] == 12:
+      parsed_time['suffix'] = 'pm'
+
     if len(str(parsed_time['minute'])) < 2:
       parsed_time['minute'] = '0' + str(parsed_time['minute'])
 
@@ -97,7 +100,7 @@ def events(request):
 
   return render(request, 'events.html', {'events': all_entries})
 
-
 def numToMonth(num):
   month = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return month[num];
+
