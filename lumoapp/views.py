@@ -210,6 +210,14 @@ def save_alarm(request, hour, minutes):
   return http.HttpResponse(200)
 
 
+def save_dim(request, minutes_to_dim):
+  pst_timezone = pytz.timezone('US/Pacific')
+  bed_time = pst_timezone.localize(datetime.today())
+  dim_event = lumo_models.BedEvent(user=dummy_user, bed_time=bed_time,
+    dim_time=minutes_to_dim)
+  return http.HttpResponse(200)
+
+
 def set_end_event_reminder(request, event_id):
   event = gcal_models.Event.objects.get(pk=event_id)
   event.remind_end_time = True

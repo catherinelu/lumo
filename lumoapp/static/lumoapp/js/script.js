@@ -89,7 +89,10 @@ $(function() {
     }
   }
 
-  function changeLights(isOn, saturation, brightness, hue_value, light) {
+  function changeLights(isOn, saturation, brightness, hue_value, light, transitiontime) {
+    if (transitiontime === undefined) {
+      transitiontime = 20;
+    }
     $.ajax({
       url: 'http://' + IP_ADDRESS + '/api/newdeveloper/lights/' + light + '/state',
       type: 'PUT',
@@ -98,7 +101,7 @@ $(function() {
         sat: saturation,
         bri: brightness,
         hue: hue_value,
-        transitiontime:20
+        transitiontime:transitiontime
       })
     });
   }

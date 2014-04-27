@@ -5,9 +5,6 @@ $(function() {
   checkForAlarms();
   setInterval(checkForAlarms, 30000);
 
-  checkForDims();
-  setInterval(checkForDims, 30000);
-
 	$( ".event-entry-overview" ).click(function() {
 		$( this ).css( "background-color", "FCFEF5");
 		var cur_detail =  $( this ).next('.event-entry-detail');
@@ -125,6 +122,7 @@ $(function() {
         url: 'save-dim/' + minutes_entered + '/'
       }).done(function() {
         $alert.modal('hide');
+        dimLights(minutes_entered);
       });	 	
     });   
 
@@ -140,42 +138,13 @@ $(function() {
       	$alert.find('.time').html(alarm.time)
         $alert.modal('show');
         $alert.css('display', 'block');
-        createLightsPattern();
+        brightenLights();
 
         $alert.on('hide.bs.modal', function() {
-        	clearLightPatterns();
           $('#footer-alarm-div img').attr('src', ALARM_PNG);
         });
 
-        a = alarm;
         tellAppAlarmOccurred(alarm.id);
-      }
-    });
-  }
-
-  function checkForDims() {
-    $.ajax({
-      url: 'check-for-dims/'
-    }).done(function(dim) {
-      if (dim) {
-        console.log(dim);
-        // DO nothing for now
-
-        // var $alert = $('.alert');
-        // $alert.find('.description').html('Time to wake up!');
-        // $alert.find('.time').html(alarm.time)
-        // $alert.modal('show');
-        // $alert.css('display', 'block');
-        
-        // createLightsPattern();
-
-        // $alert.on('hide.bs.modal', function() {
-        //   clearLightPatterns();
-        //   $('#footer-alarm-div img').attr('src', ALARM_PNG);
-        // });
-
-        // a = alarm;
-        // tellAppAlarmOccurred(alarm.id);
       }
     });
   }
@@ -184,5 +153,21 @@ $(function() {
     $.ajax({
       url: 'alarm-occurred/' + alarmId + '/'
     });
+  }
+
+  function dimLights(minutes) {
+  	// settings lights to be bright at the beginning
+  	changeLightsOfAll(true, 0, 255, 0);
+  	// dimmming
+  	setTimeout(function() { changeLightsOfAll(true, 0, 0, 0, 10 * 60 * minutes); }, 3000);
+  	// turning off
+  	setTimeout(function() { changeLightsOfAll(false, 0, 0, 0); }, 5000);
+  }
+
+  function brightenLights() {
+  	// settings lights to be bright at the beginning
+  	changeLightsOfAll(true, 0, 255, 0);
+  	// brightening, taking 1 minute
+  	setTimeout(function() { changeLightsOfAll(true, 0, 255, 0, 10 * 60); }, 3000);
   }
 });
